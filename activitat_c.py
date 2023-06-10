@@ -21,6 +21,7 @@ def velocitatProdessador():
     # Personalitzo els eixos
     plt.xlabel("ID's")
     plt.ylabel('Cloock Speed')
+    plt.legend(['Velocidades de reloj'])
     print()
     return plt.show()
 
