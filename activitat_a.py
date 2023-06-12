@@ -3,45 +3,52 @@ import matplotlib.pyplot as plt
 
 def casosTotals():
     # Guardem les dades de l'excel en una variable
-    dades = pd.read_csv('activitat_a.csv', usecols=['location', 'date', "total_cases"])
+    dades = pd.read_csv('activitat_a.csv')
 
-    # Passem les dates a format datetime, i transformem els valors en nomes el mes
-    dades['date'] = pd.to_datetime(dades.date).dt.month
+    # La dades de la Columna 'date' la pasem a numeros (1 = Gener, 2 = Febrer...) amb la funcio to_date() i fem que els casos totals es sumin
+    # amb els messos respectius
+    dadesAgrupades = dades.groupby(['location', pd.to_datetime(dades['date']).dt.month])['total_cases'].sum()
 
-    # Agrupen les dades en localitzacio i data. Les sumem i fem unstack(No se que fa)
-    dadesAgrupades = dades.groupby(by=['date', 'location']).sum().unstack()
+    # Agafem 10 Localitats o Ciutats
+    location10 = dadesAgrupades.groupby('location').sum().nlargest(10).index
 
-    # Seleccionem les primeres 10 columnes (No se com fer-ho aleatori)
-    columnas_seleccionadas = dadesAgrupades.iloc[:, :10]
-    print(columnas_seleccionadas.to_string(index=False))
+    # Bucle per iterar tots les Ciutats
+    for pais in location10:
+        casos = dadesAgrupades[pais]
+        plt.plot(casos.index, casos.values, label=pais)
 
-    columnas_seleccionadas.plot()
-    plt.xlabel("Mes")
+    # Decorem el grafic
+    plt.title("Casos por mes - 10 ciutats principals")
+    plt.xlabel("Messos")
     plt.ylabel('Casos')
-    plt.legend(['Casos Totals x Mes'])
+    plt.legend()
     print()
     return plt.show()
 
 def mortsTotals():
     # Guardem les dades de l'excel en una variable
-    dades = pd.read_csv('activitat_a.csv', usecols=['location', 'date', "total_deaths"])
+    dades = pd.read_csv('activitat_a.csv')
 
-    # Passem les dates a format datetime, i transformem els valors en nomes el mes
-    dades['date'] = pd.to_datetime(dades.date).dt.month
+    # La dades de la Columna 'date' la pasem a numeros (1 = Gener, 2 = Febrer...) amb la funcio to_date() i fem que els casos totals es sumin
+    # amb els messos respectius
+    dadesAgrupades = dades.groupby(['location', pd.to_datetime(dades['date']).dt.month])['total_deaths'].sum()
 
-    # Agrupen les dades en localitzacio i data. Les sumem i fem unstack(No se que fa)
-    dadesAgrupades = dades.groupby(by=['date', 'location']).sum().unstack()
+    # Agafem 10 Localitats o Ciutats
+    location10 = dadesAgrupades.groupby('location').sum().nlargest(10).index
 
-    # Seleccionem les primeres 10 columnes (No se com fer-ho aleatori)
-    columnas_seleccionadas = dadesAgrupades.iloc[:, :10]
-    print(columnas_seleccionadas.to_string(index=False))
+    # Bucle per iterar tots les Ciutats
+    for pais in location10:
+        casos = dadesAgrupades[pais]
+        plt.plot(casos.index, casos.values, label=pais)
 
-    columnas_seleccionadas.plot()
-    plt.xlabel("Mes")
+    # Decorem el grafic
+    plt.title("Tasa de mortalitat per mes - 10 ciutats principals")
+    plt.xlabel("Messos")
     plt.ylabel('Morts')
-    plt.legend(['Morts Totals x Mes'])
+    plt.legend()
     print()
     return plt.show()
+
 
 
 
